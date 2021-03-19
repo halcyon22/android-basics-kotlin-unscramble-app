@@ -46,7 +46,7 @@
             android:text="@string/submit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/skip"
-            app:layout_constraintTop_toBottomOf="@+id/textField" />
+            app:layout_constraintTop_toBottomOf="@+id/submission_input_layout" />
 
         <TextView
             android:id="@+id/textView_instructions"
@@ -54,13 +54,13 @@
             android:layout_height="wrap_content"
             android:text="@string/instructions"
             android:textSize="17sp"
-            app:layout_constraintBottom_toTopOf="@+id/textField"
+            app:layout_constraintBottom_toTopOf="@+id/submission_input_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_unscrambled_word" />
+            app:layout_constraintTop_toBottomOf="@+id/textView_scrambled_word" />
 
         <TextView
-            android:id="@+id/textView_unscrambled_word"
+            android:id="@+id/textView_scrambled_word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_margin"
@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:text="@string/word_count"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            app:layout_constraintBottom_toTopOf="@+id/textView_unscrambled_word"
+            app:layout_constraintBottom_toTopOf="@+id/textView_scrambled_word"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="3 of 10 words" />
@@ -95,7 +95,7 @@
             tools:text="Score: 20" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textField"
+            android:id="@+id/submission_input_layout"
             style="@style/Widget.Unscramble.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView_instructions">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/text_input_edit_text"
+                android:id="@+id/submission_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:inputType="textPersonName|textNoSuggestions"
