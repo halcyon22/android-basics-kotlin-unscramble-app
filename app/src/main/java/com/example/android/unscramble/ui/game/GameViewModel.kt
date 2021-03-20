@@ -1,18 +1,25 @@
 package com.example.android.unscramble.ui.game
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class GameViewModel : ViewModel() {
 
-    var score = 0
-        private set
-    var currentWordCount = 0
-        private set
-    var currentScrambledWord = ""
-        private set
-    private lateinit var currentPlainWord: String
+    private val _score: MutableLiveData<Int> = MutableLiveData(0)
+    val score: LiveData<Int>
+        get() = _score
 
+    private val _currentWordCount: MutableLiveData<Int> = MutableLiveData(0)
+    val currentWordCount: LiveData<Int>
+        get() = _currentWordCount
+
+    private val _currentScrambledWord: MutableLiveData<String> = MutableLiveData("")
+    val currentScrambledWord: LiveData<String>
+        get() = _currentScrambledWord
+
+    private lateinit var currentPlainWord: String
     private val usedWords: MutableSet<String> = mutableSetOf()
 
     fun isSubmissionCorrect(submission: String): Boolean {
@@ -20,11 +27,11 @@ class GameViewModel : ViewModel() {
     }
 
     fun countCorrectSubmission() {
-        score += SCORE_INCREASE
+        _score.value = _score.value?.plus(SCORE_INCREASE)
     }
 
     fun tryNextWord(): Boolean {
-        if (currentWordCount < MAX_NO_OF_WORDS) {
+        if (_currentWordCount.value!! < MAX_NO_OF_WORDS) {
             nextWord()
             return true
         }
@@ -37,22 +44,23 @@ class GameViewModel : ViewModel() {
 
         val tempWord = currentPlainWord.toCharArray()
         tempWord.shuffle()
-        currentScrambledWord = String(tempWord)
-        if (currentScrambledWord == currentPlainWord || usedWords.contains(currentPlainWord)) {
-           return nextWord()
+        _currentScrambledWord.value = String(tempWord)
+        if (_currentScrambledWord.value == currentPlainWord || usedWords.contains(currentPlainWord)) {
+            Log.i("GameFragment", "skipping duplicate")
+            return nextWord()
         }
 
         usedWords.add(currentPlainWord)
         if (allWordsList.size == usedWords.size) {
             usedWords.clear()
         }
-        currentWordCount++
+        _currentWordCount.value = _currentWordCount.value?.inc()
     }
 
     fun restart() {
         Log.i("GameFragment", "restarting")
-        score = 0
-        currentWordCount = 0
+        _score.value = 0
+        _currentWordCount.value = 0
         usedWords.clear()
     }
 
