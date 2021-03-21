@@ -31,7 +31,7 @@ class GameViewModel : ViewModel() {
     }
 
     fun tryNextWord(): Boolean {
-        if (_currentWordCount.value!! < MAX_NO_OF_WORDS) {
+        if (_currentWordCount.value!! < MAX_WORD_COUNT) {
             nextWord()
             return true
         }
@@ -39,29 +39,41 @@ class GameViewModel : ViewModel() {
     }
 
     private fun nextWord() {
-        currentPlainWord = allWordsList.random()
-        Log.i("GameFragment", "word='${currentPlainWord}'")
+        currentPlainWord = getUnusedWord()
+        _currentScrambledWord.value = scrambleCurrentWord()
+        _currentWordCount.value = _currentWordCount.value?.inc()
+    }
 
-        val tempWord = currentPlainWord.toCharArray()
-        tempWord.shuffle()
-        _currentScrambledWord.value = String(tempWord)
-        if (_currentScrambledWord.value == currentPlainWord || usedWords.contains(currentPlainWord)) {
-            Log.i("GameFragment", "skipping duplicate")
-            return nextWord()
+    private fun getUnusedWord(): String {
+        var word = allWordsList.random()
+        while (usedWords.contains(word)) {
+            word = allWordsList.random()
         }
+        Log.i("GameFragment", "word='${word}'")
+        updateUsedWords(word)
+        return word
+    }
 
-        usedWords.add(currentPlainWord)
+    private fun updateUsedWords(word: String) {
+        usedWords.add(word)
         if (allWordsList.size == usedWords.size) {
             usedWords.clear()
         }
-        _currentWordCount.value = _currentWordCount.value?.inc()
+    }
+
+    private fun scrambleCurrentWord(): String {
+        val scrambled = currentPlainWord.toCharArray()
+        scrambled.shuffle()
+        while (String(scrambled) == currentPlainWord) {
+            scrambled.shuffle()
+        }
+        return String(scrambled)
     }
 
     fun restart() {
         Log.i("GameFragment", "restarting")
         _score.value = 0
         _currentWordCount.value = 0
-        usedWords.clear()
     }
 
 }

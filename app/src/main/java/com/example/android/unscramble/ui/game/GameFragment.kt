@@ -21,6 +21,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.android.unscramble.R
@@ -30,29 +31,22 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 class GameFragment : Fragment() {
 
     private lateinit var binding: GameFragmentBinding
-
     private val viewModel: GameViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = GameFragmentBinding.inflate(inflater, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.game_fragment, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.gameViewModel = viewModel
+        binding.maxWordCount = MAX_WORD_COUNT
+
         binding.submit.setOnClickListener { onSubmitWord() }
         binding.skip.setOnClickListener { onSkipWord() }
-
-        viewModel.score.observe(viewLifecycleOwner, {
-            newScore -> binding.score.text = getString(R.string.score, newScore)
-        })
-        viewModel.currentWordCount.observe(viewLifecycleOwner, {
-            newWordCount -> binding.wordCount.text = getString(R.string.word_count, newWordCount, MAX_NO_OF_WORDS)
-        })
-        viewModel.currentScrambledWord.observe(viewLifecycleOwner, {
-            newScrambledWord -> binding.textViewScrambledWord.text = newScrambledWord
-        })
 
         nextWord()
     }
